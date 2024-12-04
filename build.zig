@@ -14,10 +14,8 @@ pub fn build(b: *std.Build) void {
     } else {
         objectFile = "libs/linux/libtts.a";
     }
-    lib.addObjectFile(.{ .cwd_relative = objectFile });
-    lib.addIncludePath(.{
-        .cwd_relative = "include/",
-    });
+    lib.addObjectFile(b.path(objectFile));
+    lib.addIncludePath(b.path("include/"));
     b.installLibFile(objectFile, objectFile);
     const lib_unit_tests = b.addTest(.{
         .root_source_file = b.path("src/eroot.zig"),
