@@ -8,15 +8,11 @@ pub fn build(b: *std.Build) void {
     var objectFile: []const u8 = "libs/macos/libtts.a";
     if (comptime builtin.target.os.tag == .windows) {
         objectFile = "libs/windows/tts.dll.lib";
-        lib.addLibraryPath(b.path("libs/windows"));
         b.installBinFile("libs/windows/tts.dll", "tts.dll");
         b.installBinFile("libs/windows/nvdaControllerClient64.dll", "nvdaControllerClient64.dll");
         b.installBinFile("libs/windows/SAAPI64.dll", "SAAPI64.dll");
-    } else if (builtin.target.os.tag == .linux) {
-        objectFile = "libs/linux/libtts.a";
-        lib.addLibraryPath(b.path("libs/linux"));
     } else {
-        lib.addLibraryPath(b.path("libs/macos"));
+        objectFile = "libs/linux/libtts.a";
     }
     lib.addObjectFile(b.path(objectFile));
     lib.addIncludePath(b.path("include/"));
