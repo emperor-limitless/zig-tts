@@ -4,13 +4,7 @@ const builtin = @import("builtin");
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const lib = b.addStaticLibrary(.{
-        .name = "zig-tts",
-        .root_source_file = b.path("src/root.zig"),
-        .target = target,
-        .optimize = optimize,
-    });
-    lib.linkLibC();
+    const lib = b.addModule("tts", .{ .root_source_file = b.path("src/root.zig") });
     var objectFile: []const u8 = "libs/macos/libtts.a";
     if (comptime builtin.target.os.tag == .windows) {
         objectFile = "libs/windows/tts.dll.lib";
@@ -24,10 +18,9 @@ pub fn build(b: *std.Build) void {
     lib.addIncludePath(.{
         .cwd_relative = "include/",
     });
-    b.installArtifact(lib);
     b.installLibFile(objectFile, objectFile);
     const lib_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/root.zig"),
+        .root_source_file = b.path("src/eroot.zig"),
         .target = target,
         .optimize = optimize,
     });
