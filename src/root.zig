@@ -96,7 +96,7 @@ pub const Tts = struct {
         };
     }
 
-    pub fn speak(self: *Tts, text: []const u8, interrupt: bool) TtsError!void {
+    pub fn speak(self: *Tts, text: [:0]const u8, interrupt: bool) !void {
         const success = c.tts_speak(self.tts, text.ptr, interrupt, null);
         if (!success) {
             const err_msg = std.mem.span(c.tts_get_error());
