@@ -95,7 +95,12 @@ pub const Tts = struct {
             .volume = features.volume,
         };
     }
-
+    /// Speaks a given string.
+    /// Note, must be a null-terminated string.
+    /// zig normal string literals are null terminated, but allocating anything is usually not.
+    /// usually, for example, when using something like std.fmt.allocPrint, you want to use the std.fmt.allocPrintZ instead.
+    /// it's a convention in the standard library for a zero version of a string allocation related version to exist,.
+    /// so make sure you use it with this function instead of the standard one.
     pub fn speak(self: *Tts, text: [:0]const u8, interrupt: bool) !void {
         const success = c.tts_speak(self.tts, text.ptr, interrupt, null);
         if (!success) {
