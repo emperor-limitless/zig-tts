@@ -96,18 +96,13 @@ pub const Tts = struct {
         };
     }
 
-    pub fn speak(self: *Tts, text: []const u8, interrupt: bool) !?UtteranceId {
-        var utterance: ?*c.UtteranceId = null;
-        const success = c.tts_speak(self.tts, text.ptr, interrupt, &utterance);
+    pub fn speak(self: *Tts, text: []const u8, interrupt: bool) TtsError!void {
+        const success = c.tts_speak(self.tts, text.ptr, interrupt, null);
         if (!success) {
             const err_msg = std.mem.span(c.tts_get_error());
             std.log.err("TTS speak failed: {s}", .{err_msg});
             return TtsError.InvalidOperation;
         }
-        return if (utterance) |id|
-            UtteranceId{ .id = id }
-        else
-            null;
     }
 
     pub fn stop(self: *Tts) !void {
